@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="bd2.Muber.model.Usuario" table="USUARIO" discriminator-value="TIPO_USUARIO">
+		<id name="idUsuario" column="ID_USUARIO">
+			<generator class="native" />
+		</id>
+
+		<discriminator column="DISCRIMINATOR" type="string" />
+
+		<property name="nombre" not-null="true" />
+		<property name="password" not-null="true" />
+		<property name="fechaIngreso" not-null="true" />
+
+		<subclass name="bd2.Muber.model.Conductor" extends="Person"	discriminator-value="CONDUCTOR">
+			<property name="fechaLicencia" />
+			<bag name="viajes" table="VIAJE_CONDUCTOR" cascade="all" lazy="false">
+				<key column="ID_CONDUCTOR" not-null="true" />
+				<many-to-many entity-name="bd2.Muber.model.Viaje"
+					column="ID_VIAJE" />
+			</bag>
+		</subclass>
+
+		<subclass name="bd2.Muber.model.Pasajero" extends="Person" discriminator-value="PASAJERO">
+			<property name="credito" />
+		</subclass>
+	</class>
+</hibernate-mapping>

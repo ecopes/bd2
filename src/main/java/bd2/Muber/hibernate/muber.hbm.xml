@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="bd2.Muber.model.Muber" table="MUBER">
+		<id name="idMuber" column="ID_MUBER">
+			<generator class="native" />
+		</id>
+      
+ 		<bag name="usuarios" cascade="all" >
+			<key column="ID_MUBER"/>
+			<one-to-many class="bd2.Muber.model.Usuario" />
+		</bag>
+
+		<bag name="viajes" cascade="all" >
+			<key column="ID_MUBER"/>
+			<one-to-many class="bd2.Muber.model.Viaje" />
+		</bag>
+		
+	</class>
+
+</hibernate-mapping>

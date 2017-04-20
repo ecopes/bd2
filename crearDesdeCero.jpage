@@ -1,0 +1,45 @@
+Configuration cfg = new Configuration().configure();
+SessionFactory sf = cfg.buildSessionFactory();
+Session session = sf.openSession();
+
+Muber muber = new Muber();
+
+Pasajero pasajeroA = new Pasajero("nombreA","unaPassword",new Date(),15);
+Pasajero pasajeroB = new Pasajero("nombreB","unaPassword",new Date(),30);
+Pasajero pasajeroC = new Pasajero("nombreC","unaPassword",new Date(),45);
+Pasajero pasajeroD = new Pasajero("nombreD","unaPassword",new Date(),60);
+
+Conductor conductorA = new Conductor("conductorA","unaPassword", new Date(), new Date());
+Conductor conductorB = new Conductor("conductorB","unaPassword", new Date(), new Date());
+Conductor conductorC = new Conductor("conductorC","unaPassword", new Date(), new Date());
+
+Viaje viajeA = new Viaje("destinoA", "origenA", 5, 90, conductorA);
+conductorA.addViaje(viajeA);
+viajeA.addPasajero(pasajeroA);
+viajeA.addPasajero(pasajeroB);
+viajeA.addPasajero(pasajeroC);
+viajeA.addPasajero(pasajeroD);
+
+muber.addUsuario(pasajeroA);
+muber.addUsuario(pasajeroB);
+muber.addUsuario(pasajeroC);
+muber.addUsuario(pasajeroD);
+muber.addUsuario(conductorA);
+muber.addUsuario(conductorB);
+muber.addUsuario(conductorC);
+
+muber.addViaje(viajeA);
+
+Calificacion calificacionA = new Calificacion("comentario calificacionA",5,pasajeroA);
+Calificacion calificacionB = new Calificacion("comentario calificacionB",4,pasajeroB);
+Calificacion calificacionC = new Calificacion("comentario calificacionC",5,pasajeroC);
+Calificacion calificacionD = new Calificacion("comentario calificacionD",3,pasajeroD);
+
+viajeA.addCalificacion(calificacionA);
+viajeA.addCalificacion(calificacionB);
+viajeA.addCalificacion(calificacionC);
+viajeA.addCalificacion(calificacionD);
+
+Transaction tx = session.beginTransaction();
+session.persist(muber);
+tx.commit();
