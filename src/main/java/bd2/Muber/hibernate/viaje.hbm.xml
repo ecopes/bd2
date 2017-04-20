@@ -21,7 +21,7 @@
             <many-to-many entity-name="bd2.Muber.model.Pasajero" column="ID_PASAJERO"/>
         </bag>
              
-        <bag name="calificaciones" table="VIAJE_CALIFICACION" fetch="select" cascade="all">
+        <bag name="calificaciones" table="VIAJE_CALIFICACION" lazy="false" fetch="select" cascade="all">
             <key column="ID_VIAJE" not-null="false"/>
             <one-to-many class="bd2.Muber.model.Calificacion"/>
         </bag>

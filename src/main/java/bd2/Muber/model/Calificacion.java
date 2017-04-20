@@ -4,7 +4,7 @@ public class Calificacion{
 
 	private int idCalificacion;
 	private String comentario;
-	private int puntaje;
+	private double puntaje;
 	private Pasajero pasajero;
 	private Viaje viaje;
 	
@@ -12,7 +12,7 @@ public class Calificacion{
 		
 	}
 	
-	public Calificacion(String comentario, int puntaje, Pasajero pasajero){
+	public Calificacion(String comentario, double puntaje, Pasajero pasajero){
 		this.comentario = comentario;
 		this.puntaje = puntaje;
 		this.pasajero = pasajero;
@@ -35,11 +35,11 @@ public class Calificacion{
 		this.comentario = comentario;
 	}
 
-	public int getPuntaje() {
+	public double getPuntaje() {
 		return puntaje;
 	}
 
-	public void setPuntaje(int puntaje) {
+	public void setPuntaje(double puntaje) {
 		this.puntaje = puntaje;
 	}
 

@@ -30,8 +30,8 @@ muber.addUsuario(conductorC);
 
 muber.addViaje(viajeA);
 
-Calificacion calificacionA = new Calificacion("comentario calificacionA",5,pasajeroA);
-Calificacion calificacionB = new Calificacion("comentario calificacionB",4,pasajeroB);
+Calificacion calificacionA = new Calificacion("comentario calificacionA",5.05,pasajeroA);
+Calificacion calificacionB = new Calificacion("comentario calificacionB",4.3,pasajeroB);
 Calificacion calificacionC = new Calificacion("comentario calificacionC",5,pasajeroC);
 Calificacion calificacionD = new Calificacion("comentario calificacionD",3,pasajeroD);
 

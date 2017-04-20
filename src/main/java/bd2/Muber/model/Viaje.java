@@ -11,7 +11,7 @@ public class Viaje{
 	private String origen;
 	private int cantidadMaximaPasajeros;
 	private Date fecha;
-	private int costoTotal;
+	private float costoTotal;
 	private Collection<Pasajero> pasajeros;
 	private Collection<Calificacion> calificaciones;
 	private Conductor conductor;
@@ -22,7 +22,7 @@ public class Viaje{
 		this.fecha = new Date();
 	}
 	
-	public Viaje(String destino, String origen, int cantidadMaximaPasajeros,int costoTotal, Conductor conductor){
+	public Viaje(String destino, String origen, int cantidadMaximaPasajeros,float costoTotal, Conductor conductor){
 		this();
 		this.destino = destino;
 		this.origen = origen;
@@ -74,11 +74,11 @@ public class Viaje{
 		this.fecha = fecha;
 	}
 
-	public int getCostoTotal() {
+	public float getCostoTotal() {
 		return costoTotal;
 	}
 
-	public void setCostoTotal(int costoTotal) {
+	public void setCostoTotal(float costoTotal) {
 		this.costoTotal = costoTotal;
 	}
 
