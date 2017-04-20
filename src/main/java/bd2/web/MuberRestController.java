@@ -1,6 +1,5 @@
 package bd2.web;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,7 @@ import com.google.gson.GsonBuilder;
 
 import bd2.Muber.model.Calificacion;
 import bd2.Muber.model.Conductor;
+import bd2.Muber.model.ConductorDecorator;
 import bd2.Muber.model.Pasajero;
 import bd2.Muber.model.Viaje;
 import bd2.Muber.service.ConductorService;
@@ -124,14 +124,16 @@ public class MuberRestController {
 			aMap.put("Cantidad maxima pasajeros",viaje.getCantidadMaximaPasajeros());
 			aMap.put("Fecha",viaje.getFecha());
 			aMap.put("Costo total",viaje.getCostoTotal());
-			aMap.put("Calificacion promedio conductor",(new ConductorService().getCalificacionPromedio(viaje.getConductor())));
+			ConductorDecorator conductor = new ConductorDecorator(viaje.getConductor());
+			aMap.put("Calificacion promedio conductor", conductor.getCalificacion());
 			i++;
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(aMap);
 	}
 
-	@RequestMapping(value = "/conductores/detalle/", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
+/*	este quedo viejo, es el que usaba el servicio. Decidi usar un decorator ahora
+  @RequestMapping(value = "/conductores/detalle/", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductoresDetalle(@RequestParam(value="conductorId") int id) {
 		Conductor conductor = (Conductor) getSession().get(Conductor.class,id);
 		Map<String, Object> aMap = new HashMap<String, Object>();
@@ -142,7 +144,21 @@ public class MuberRestController {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(aMap);
 	}
-
+*/
+	
+	@RequestMapping(value = "/conductores/detalle/", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
+	public String conductoresDetalle(@RequestParam(value="conductorId") int id) {
+		Conductor conductorAux = (Conductor) getSession().get(Conductor.class,id);
+		ConductorDecorator conductor = new ConductorDecorator(conductorAux);
+		Map<String, Object> aMap = new HashMap<String, Object>();
+		aMap.put("Nombre de Usuario", conductor.getNombre());
+		aMap.put("Viajes realizados", conductor.getViajes().size());
+		aMap.put("Puntaje promedio", conductor.getCalificacion());
+		aMap.put("Fecha de Licencia", conductor.getFechaLicencia());
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(aMap);
+	}
+	
 	@RequestMapping(value = "/viajes/nuevo/", method = RequestMethod.POST, produces = "application/json", headers = "Accept=application/json")
 	public String viajesNuevo(
 			@RequestParam(value="conductorId") int conductorID
@@ -191,14 +207,14 @@ public class MuberRestController {
 
 	@RequestMapping(value = "/conductores/top10", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductoresTop10() {
-		ArrayList<Conductor> conductoresTop10 = (new ConductorService().getTop10Conductors());
+		List<ConductorDecorator> conductoresTop10 = (new ConductorService().getTop10Conductors());
 		Map<String, Object> aMap2 = new HashMap<String, Object>();
 		int i = 1;
-		for (Conductor conductor : conductoresTop10) {
+		for (ConductorDecorator conductor : conductoresTop10) {
 			Map<String, Object> aMap = new HashMap<String, Object>();
 			aMap.put("Nombre de Usuario", conductor.getNombre());
 			aMap.put("Viajes realizados", conductor.getViajes().size());
-			aMap.put("Puntaje promedio", (new ConductorService().getCalificacionPromedio(conductor)));
+			aMap.put("Puntaje promedio", conductor.getCalificacion());
 			aMap.put("Fecha de Licencia", conductor.getFechaLicencia());
 			aMap2.put("Puesto : "+Integer.toString(i),aMap);
 			i++;
