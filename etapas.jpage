@@ -1,0 +1,83 @@
+Configuration cfg = new Configuration().configure();
+SessionFactory sf = cfg.buildSessionFactory();
+Session session = sf.openSession();
+// ETAPA 1
+Muber muber = new Muber();
+// creo una fecha para las licencias
+Calendar calendar = Calendar.getInstance();
+calendar.setTime(new Date());
+calendar.add(Calendar.YEAR, 2);
+Date dateLicencia = calendar.getTime();
+
+// creo al conductor
+Conductor roberto = new Conductor("Roberto","unaPassword", new Date(), dateLicencia);
+Viaje viajeRoberto = new Viaje("Tres Arroyos","La Plata",4,900,roberto);
+roberto.addViaje(viajeRoberto);
+
+//creo a los 3 pasajeros
+Pasajero german = new Pasajero("German","unaPassword",new Date(),1500);
+Pasajero alicia = new Pasajero("Alicia","unaPassword",new Date(),1500);
+Pasajero margarita = new Pasajero("Margarita","unaPassword",new Date(),1500);
+
+// agrego los 3 pasajeros al viaje
+viajeRoberto.addPasajero(german);
+viajeRoberto.addPasajero(alicia);
+viajeRoberto.addPasajero(margarita);
+
+// finalizo el viaje
+viajeRoberto.finalizar();
+
+// creo las 3 calificaciones
+Calificacion calificacionGerman = new Calificacion("comentario de german",5,german);
+Calificacion calificacionAlicia = new Calificacion("comentario de alicia",4,alicia);
+Calificacion calificacionMargarita = new Calificacion("comentario de margarita",4,margarita);
+
+// agrego las 3 calificaciones al viaje
+viajeRoberto.addCalificacion(calificacionGerman);
+viajeRoberto.addCalificacion(calificacionAlicia);
+viajeRoberto.addCalificacion(calificacionMargarita);
+
+// agrego solo viajeRoberto, porque por persistencia por alcance agrega a todos
+muber.addViaje(viajeRoberto);
+Transaction tx = session.beginTransaction();
+session.persist(muber);
+tx.commit();
+
+
+// ETAPA 2
+
+// agrego el segundo viaje de roberto
+Viaje viajeRoberto2 = new Viaje("Mar del Plata","Cordoba",4,350,roberto);
+roberto.addViaje(viajeRoberto2);
+
+// agrego credito a margarita
+margarita.addCredito(4000);
+
+// sumo al viaje a margarita
+viajeRoberto2.addPasajero(margarita);
+
+// creo a hugo
+Pasajero hugo = new Pasajero("Hugo","unaPassword",new Date(),2300);
+
+// agrego a hugo al viaje
+System.out.println( "-------------------" + viajeRoberto2.addPasajero(hugo) + "---------------" );
+
+//finalizo el viaje
+viajeRoberto2.finalizar();
+
+//creo las 2 calificaciones
+Calificacion calificacionMargarita2 = new Calificacion("comentario2 de margarita",4,margarita);
+Calificacion calificacionHugo = new Calificacion("comentario de hugo",5,hugo);
+
+//agrego las 2 calificaciones al viaje
+viajeRoberto2.addCalificacion(calificacionMargarita2);
+viajeRoberto2.addCalificacion(calificacionHugo);
+
+// agregando el viaje a muber en un ambiente transaccional , se persiste por alcance 
+
+Transaction tx2 = session.beginTransaction();
+muber.addViaje(viajeRoberto2);
+tx2.commit();
+
+// =========== CONSULTAR ==========
+// ETAPA 2 consultar, dice salir 3500 el viaje, y hugo tiene 2300 de credito, se agrega igual al viaje? se puede tener credito negativo???

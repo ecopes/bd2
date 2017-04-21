@@ -11,7 +11,7 @@ public class Viaje{
 	private String origen;
 	private int cantidadMaximaPasajeros;
 	private Date fecha;
-	private float costoTotal;
+	private double costoTotal;
 	private Collection<Pasajero> pasajeros;
 	private Collection<Calificacion> calificaciones;
 	private Conductor conductor;
@@ -22,7 +22,7 @@ public class Viaje{
 		this.fecha = new Date();
 	}
 	
-	public Viaje(String destino, String origen, int cantidadMaximaPasajeros,float costoTotal, Conductor conductor){
+	public Viaje(String destino, String origen, int cantidadMaximaPasajeros,double costoTotal, Conductor conductor){
 		this();
 		this.destino = destino;
 		this.origen = origen;
@@ -74,11 +74,11 @@ public class Viaje{
 		this.fecha = fecha;
 	}
 
-	public float getCostoTotal() {
+	public double getCostoTotal() {
 		return costoTotal;
 	}
 
-	public void setCostoTotal(float costoTotal) {
+	public void setCostoTotal(double costoTotal) {
 		this.costoTotal = costoTotal;
 	}
 
@@ -99,7 +99,10 @@ public class Viaje{
 	}
 	
 	public boolean addPasajero(Pasajero pasajero){
-		if ((this.getCantidadMaximaPasajeros() > this.getPasajeros().size()) && !this.finalizado){
+		// le resto uno a cantidadMaximaPasajeros porque se cuenta el conductor
+		// me fijo si no finalizo el viaje
+		// y si el pasajero va a poder pagar el viaje
+		if ((this.getCantidadMaximaPasajeros()-1 > this.getPasajeros().size()) && !this.finalizado && (pasajero.getCredito() >= this.costoTotal)){
 			this.pasajeros.add(pasajero);
 			return true;
 		}
@@ -128,6 +131,13 @@ public class Viaje{
 	public void addCalificacion(Calificacion calificacion){
 		calificacion.setViaje(this);
 		this.calificaciones.add(calificacion);
+	}
+	
+	public void finalizar(){
+		for (Pasajero pasajero : pasajeros) {
+			pasajero.subtractCredito(this.costoTotal);
+		}
+		this.finalizado = true;
 	}
 	
 }
