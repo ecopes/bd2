@@ -1,6 +1,7 @@
 package bd2.web;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -132,20 +133,6 @@ public class MuberRestController {
 		return gson.toJson(aMap);
 	}
 
-/*	este quedo viejo, es el que usaba el servicio. Decidi usar un decorator ahora
-  @RequestMapping(value = "/conductores/detalle/", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
-	public String conductoresDetalle(@RequestParam(value="conductorId") int id) {
-		Conductor conductor = (Conductor) getSession().get(Conductor.class,id);
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		aMap.put("Nombre de Usuario", conductor.getNombre());
-		aMap.put("Viajes realizados", conductor.getViajes().size());
-		aMap.put("Puntaje promedio", (new ConductorService().getCalificacionPromedio(conductor)));
-		aMap.put("Fecha de Licencia", conductor.getFechaLicencia());
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
-	}
-*/
-	
 	@RequestMapping(value = "/conductores/detalle/", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductoresDetalle(@RequestParam(value="conductorId") int id) {
 		Conductor conductorAux = (Conductor) getSession().get(Conductor.class,id);
@@ -158,7 +145,7 @@ public class MuberRestController {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(aMap);
 	}
-	
+
 	@RequestMapping(value = "/viajes/nuevo/", method = RequestMethod.POST, produces = "application/json", headers = "Accept=application/json")
 	public String viajesNuevo(
 			@RequestParam(value="conductorId") int conductorID
@@ -193,10 +180,10 @@ public class MuberRestController {
 		Pasajero pasajero = (Pasajero) session.get(Pasajero.class, pasajeroID);
 
 		Calificacion calificacion = new Calificacion(comentario,puntaje,pasajero);
-		viaje.addCalificacion(calificacion);
+
 
 		Transaction tx = session.beginTransaction();
-		session.merge(viaje);
+		viaje.addCalificacion(calificacion);
 		tx.commit();
 
 		Map<String, Object> aMap = new HashMap<String, Object>();
@@ -208,10 +195,10 @@ public class MuberRestController {
 	@RequestMapping(value = "/conductores/top10", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductoresTop10() {
 		List<ConductorDecorator> conductoresTop10 = (new ConductorService().getTop10Conductors());
-		Map<String, Object> aMap2 = new HashMap<String, Object>();
+		LinkedHashMap<String, Object> aMap2 = new LinkedHashMap<String, Object>();
 		int i = 1;
 		for (ConductorDecorator conductor : conductoresTop10) {
-			Map<String, Object> aMap = new HashMap<String, Object>();
+			LinkedHashMap<String, Object> aMap = new LinkedHashMap<String, Object>();
 			aMap.put("Nombre de Usuario", conductor.getNombre());
 			aMap.put("Viajes realizados", conductor.getViajes().size());
 			aMap.put("Puntaje promedio", conductor.getCalificacion());
@@ -221,5 +208,66 @@ public class MuberRestController {
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(aMap2);
+	}
+
+	@RequestMapping(value = "/viajes/agregarPasajero", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
+	public String agregarPasajero(@RequestParam int pasajeroId, @RequestParam int viajeId) {
+		Session session = getSession();
+
+		Pasajero pasajero = (Pasajero) session.get(Pasajero.class,pasajeroId);
+		Viaje viaje = (Viaje) session.get(Viaje.class,viajeId);
+
+		Transaction tx = session.beginTransaction();
+		Boolean seAgregoPasajero = viaje.addPasajero(pasajero);
+		tx.commit();
+		Map<String, Object> aMap = new HashMap<String, Object>();
+		if (!viaje.isFinalizado()){
+			if (seAgregoPasajero){
+				aMap.put("Respuesta","Se pudo agregar el pasajero");
+			}else{
+				aMap.put("Respuesta","No se pudo agregar el pasajero");
+			}
+		}else{
+			aMap.put("Respuesta","El viaje esta finalizado");
+		}
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(aMap);
+	}
+
+	@RequestMapping(value = "/pasajeros/cargarCredito", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
+	public String agregarCreditoAPasajero(@RequestParam int pasajeroId, @RequestParam double monto) {
+		Session session = getSession();
+
+		Pasajero pasajero = (Pasajero) session.get(Pasajero.class,pasajeroId);
+
+		Transaction tx = session.beginTransaction();
+		pasajero.addCredito(monto);
+		tx.commit();
+		Map<String, Object> aMap = new HashMap<String, Object>();
+		aMap.put("Respuesta","Se agrego el credito");
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(aMap);
+	}
+
+	@RequestMapping(value = "/viajes/finalizar", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
+	public String finalizarViaje(@RequestParam int viajeId) {
+		Session session = getSession();
+
+		Viaje viaje = (Viaje) session.get(Viaje.class,viajeId);
+		Map<String, Object> aMap = new HashMap<String, Object>();
+		if (viaje.isFinalizado()){
+			aMap.put("Respuesta","El viaje ya estaba finalizado");
+		}else{
+			Transaction tx = session.beginTransaction();
+			viaje.setFinalizado(true);
+			tx.commit();
+			aMap.put("Respuesta","Se finalizo el viaje");
+		}
+
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(aMap);
 	}
 }

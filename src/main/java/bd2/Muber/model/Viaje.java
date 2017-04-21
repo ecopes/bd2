@@ -99,7 +99,7 @@ public class Viaje{
 	}
 	
 	public boolean addPasajero(Pasajero pasajero){
-		if (this.getCantidadMaximaPasajeros() > this.getPasajeros().size()){
+		if ((this.getCantidadMaximaPasajeros() > this.getPasajeros().size()) && !this.finalizado){
 			this.pasajeros.add(pasajero);
 			return true;
 		}

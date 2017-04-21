@@ -1,6 +1,5 @@
 package bd2.Muber.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import bd2.Muber.model.Conductor;
 import bd2.Muber.model.ConductorDecorator;
 
 public class ConductorService {
@@ -26,19 +24,14 @@ public class ConductorService {
 	@SuppressWarnings("unchecked")
 	public List<ConductorDecorator> getTop10Conductors(){
 		Session session = getSession();
-		Query query = session.createQuery("from Conductor");
-		List<Conductor> conductoresTop10 = (List<Conductor>) query.list();
-		ArrayList<ConductorDecorator> conductoresDecorator = new ArrayList<ConductorDecorator>();
-		for (Conductor conductorAux : conductoresTop10) {
-			ConductorDecorator conductor = new ConductorDecorator(conductorAux);
-			conductoresDecorator.add(conductor);
-		}
-		Collections.sort(conductoresDecorator);
-		if (conductoresDecorator.size()<=10){
-			return conductoresDecorator;
+		Query query = session.createQuery("select new bd2.Muber.model.ConductorDecorator(c) from Conductor c");
+		List<ConductorDecorator> conductoresTop10 = (List<ConductorDecorator>) query.list();
+		Collections.sort(conductoresTop10);
+		if (conductoresTop10.size()<=10){
+			return conductoresTop10;
 		}
 
-		return conductoresDecorator.subList(0, 10);
+		return conductoresTop10.subList(0, 10);
 
 	}
 }
