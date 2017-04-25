@@ -23,10 +23,10 @@
 
 		<!-- Incluir mappings aquí -->
 		<!-- <mapping resource="hibernate/clase.hbm.xml" /> -->
-		<mapping resource="bd2/Muber/hibernate/calificacion.hbm.xml" />
-		<mapping resource="bd2/Muber/hibernate/muber.hbm.xml" />
-		<mapping resource="bd2/Muber/hibernate/usuario.hbm.xml" />
-		<mapping resource="bd2/Muber/hibernate/viaje.hbm.xml" />
+		<mapping resource="hibernate/calificacion.hbm.xml" />
+		<mapping resource="hibernate/muber.hbm.xml" />
+		<mapping resource="hibernate/usuario.hbm.xml" />
+		<mapping resource="hibernate/viaje.hbm.xml" />
 	</session-factory>
 	
 </hibernate-configuration>

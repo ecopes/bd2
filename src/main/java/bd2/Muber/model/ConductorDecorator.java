@@ -3,7 +3,6 @@ package bd2.Muber.model;
 import java.util.List;
 
 public class ConductorDecorator extends Conductor implements Comparable<ConductorDecorator>{
-	private double calificacion;
 
 	public ConductorDecorator(){
 	}
@@ -26,14 +25,9 @@ public class ConductorDecorator extends Conductor implements Comparable<Conducto
 		if (cantidadTotal == 0){
 			return 0;
 		}
-		this.setCalificacion(calificacionTotal / cantidadTotal);
-		return this.calificacion;
+		return (calificacionTotal / cantidadTotal);
+		
 	}
-
-	public void setCalificacion(double calificacion) {
-		this.calificacion = calificacion;
-	}
-
 	@Override
 	public int compareTo(ConductorDecorator c) {
 		if (this.getCalificacion() > c.getCalificacion()) {

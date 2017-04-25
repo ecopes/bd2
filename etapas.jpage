@@ -78,10 +78,3 @@ viajeRoberto2.addCalificacion(calificacionHugo);
 Transaction tx2 = session.beginTransaction();
 muber.addViaje(viajeRoberto2);
 tx2.commit();
-
-/* =========== CONSULTAR ==========
--+- ETAPA 2 : dice salir 3500 el viaje, y hugo tiene 2300 de credito, 
-se agrega igual al viaje? se puede tener credito negativo???
-
-*/
-

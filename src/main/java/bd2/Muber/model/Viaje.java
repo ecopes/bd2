@@ -99,10 +99,8 @@ public class Viaje{
 	}
 	
 	public boolean addPasajero(Pasajero pasajero){
-		// le resto uno a cantidadMaximaPasajeros porque se cuenta el conductor
 		// me fijo si no finalizo el viaje
-		// y si el pasajero va a poder pagar el viaje
-		if ((this.getCantidadMaximaPasajeros()-1 > this.getPasajeros().size()) && !this.finalizado && (pasajero.getCredito() >= this.costoTotal)){
+		if (this.getCantidadMaximaPasajeros() > this.getPasajeros().size()){
 			this.pasajeros.add(pasajero);
 			return true;
 		}
@@ -135,7 +133,7 @@ public class Viaje{
 	
 	public void finalizar(){
 		for (Pasajero pasajero : pasajeros) {
-			pasajero.subtractCredito(this.costoTotal);
+			pasajero.subtractCredito(this.costoTotal/pasajeros.size());
 		}
 		this.finalizado = true;
 	}
