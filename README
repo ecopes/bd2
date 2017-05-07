@@ -1,0 +1,11 @@
+TENER EN CUENTA:
+agregar al servidor
+-doble click en el servidor
+-open launch configuration
+-tab arguments
+-en VM Arguments agregar un -Dspring.profiles.active=dev
+esto indica que se cargara el archivo config_dev.properties
+
+
+PREGUNTAS:
+Como agregaria un comentario a un viaje sin llamar al dao? (Persistencia por alcanze)
