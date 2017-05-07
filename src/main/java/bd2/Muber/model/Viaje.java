@@ -1,7 +1,7 @@
 package bd2.Muber.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 public class Viaje{
@@ -16,12 +16,12 @@ public class Viaje{
 	private Collection<Calificacion> calificaciones;
 	private Conductor conductor;
 	private boolean finalizado;
-	
+
 	public Viaje(){
 		this.finalizado = false;
 		this.fecha = new Date();
 	}
-	
+
 	public Viaje(String destino, String origen, int cantidadMaximaPasajeros,double costoTotal, Conductor conductor){
 		this();
 		this.destino = destino;
@@ -29,11 +29,11 @@ public class Viaje{
 		this.cantidadMaximaPasajeros = cantidadMaximaPasajeros;
 		this.costoTotal = costoTotal;
 		this.conductor = conductor;
-		this.pasajeros = new ArrayList<Pasajero>();
-		this.calificaciones = new ArrayList<Calificacion>();
+		this.pasajeros = Collections.emptyList();
+		this.calificaciones = Collections.emptyList();
 	}
 
-	
+
 	public int getIdViaje() {
 		return idViaje;
 	}
@@ -97,7 +97,7 @@ public class Viaje{
 	public void setConductor(Conductor conductor) {
 		this.conductor = conductor;
 	}
-	
+
 	public boolean addPasajero(Pasajero pasajero){
 		// me fijo si no finalizo el viaje
 		if (this.getCantidadMaximaPasajeros() > this.getPasajeros().size()){
@@ -120,22 +120,24 @@ public class Viaje{
 	}
 
 	public void setCalificaciones(Collection<Calificacion> calificaciones) {
-		for (Calificacion calificacion : calificaciones) {
-			calificacion.setViaje(this);
+		if (calificaciones != null){
+			for (Calificacion calificacion : calificaciones) {
+				calificacion.setViaje(this);
+			}
 		}
 		this.calificaciones = calificaciones;
 	}
-	
+
 	public void addCalificacion(Calificacion calificacion){
 		calificacion.setViaje(this);
 		this.calificaciones.add(calificacion);
 	}
-	
+
 	public void finalizar(){
 		for (Pasajero pasajero : pasajeros) {
 			pasajero.subtractCredito(this.costoTotal/pasajeros.size());
 		}
 		this.finalizado = true;
 	}
-	
+
 }

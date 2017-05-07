@@ -1,7 +1,7 @@
 package bd2.Muber.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 public class Conductor extends Usuario {
@@ -11,7 +11,7 @@ public class Conductor extends Usuario {
 	
 	public Conductor(){
 		super();
-		this.viajes = new ArrayList<Viaje>();
+		this.viajes = Collections.emptyList();
 	}
 	
 	public Conductor(String nombre,String password,Date fechaIngreso,Date fechaLicencia){

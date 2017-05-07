@@ -1,16 +1,10 @@
 package bd2.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,27 +15,21 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import bd2.Muber.DTO.ConductorDTO;
+import bd2.Muber.DTO.PasajeroDTO;
+import bd2.Muber.DTO.ViajeDTO;
+import bd2.Muber.daoHibernateImp.DAOFactory;
 import bd2.Muber.model.Calificacion;
 import bd2.Muber.model.Conductor;
-import bd2.Muber.model.ConductorDecorator;
 import bd2.Muber.model.Pasajero;
 import bd2.Muber.model.Viaje;
-import bd2.Muber.service.ConductorService;
+import bd2.Muber.service.ServiceFactory;
 
 @ControllerAdvice
 @RequestMapping("/services")
 @ResponseBody
 @EnableWebMvc
 public class MuberRestController {
-
-	protected Session getSession() {
-		Configuration cfg = new Configuration();
-		cfg.configure("hibernate.cfg.xml");
-		@SuppressWarnings("deprecation")
-		SessionFactory factory = cfg.buildSessionFactory();
-		Session session = factory.openSession();
-		return session;
-	}
 
 	@RequestMapping(value = "/listarWS", method = RequestMethod.GET)
 	public String example() {
@@ -85,65 +73,42 @@ public class MuberRestController {
 		return pagina;
 	}
 
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/pasajeros", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String pasajeros() {
-		Criteria criteria  = this.getSession().createCriteria(Pasajero.class);
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		List<Pasajero> pasajeros = criteria.list();
-		for (Pasajero pasajero : pasajeros) {
-			aMap.put(Integer.toString(pasajero.getIdUsuario()),pasajero.getNombre());
+		List<PasajeroDTO> pasajerosDTO = new ArrayList<PasajeroDTO>();
+		for (Pasajero pasajero : DAOFactory.getInstance().getPasajeroDAO().recuperarTodos()) {
+		 pasajerosDTO.add(new PasajeroDTO(pasajero));
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
+		return gson.toJson(pasajerosDTO);
 	}
 
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/conductores", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductores() {
-		Criteria criteria  = this.getSession().createCriteria(Conductor.class);
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		List<Conductor> conductores = criteria.list();
-		for (Conductor conductor : conductores) {
-			aMap.put(Integer.toString(conductor.getIdUsuario()),conductor.getNombre());
+		List<ConductorDTO> conductoresDTO = new ArrayList<ConductorDTO>();  
+		for (Conductor conductor : DAOFactory.getInstance().getConductorDAO().recuperarTodos()) {
+			conductoresDTO.add(new ConductorDTO(conductor));
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
+		return gson.toJson(conductoresDTO);
 	}
 
 	@RequestMapping(value = "/viajes/abiertos", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String viajesAbiertos() {
-		Query query = getSession().createQuery("from Viaje where finalizado = false");
-		@SuppressWarnings("unchecked")
-		List<Viaje> list = (List<Viaje>) query.list();
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		int i = 1;
-		for (Viaje viaje : list) {
-			aMap.put("Viaje",Integer.toString(i));
-			aMap.put("Destino",viaje.getDestino());
-			aMap.put("Origen",viaje.getOrigen());
-			aMap.put("Cantidad maxima pasajeros",viaje.getCantidadMaximaPasajeros());
-			aMap.put("Fecha",viaje.getFecha());
-			aMap.put("Costo total",viaje.getCostoTotal());
-			ConductorDecorator conductor = new ConductorDecorator(viaje.getConductor());
-			aMap.put("Calificacion promedio conductor", conductor.getCalificacion());
-			i++;
+		
+		List<ViajeDTO> viajesDTO = new ArrayList<ViajeDTO>();
+		for (Viaje viaje : DAOFactory.getInstance().getViajeDAO().getViajesAbiertos()) {
+			viajesDTO.add(new ViajeDTO(viaje));
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
+		return gson.toJson(viajesDTO);
 	}
 
 	@RequestMapping(value = "/conductores/detalle/", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductoresDetalle(@RequestParam(value="conductorId") int id) {
-		Conductor conductorAux = (Conductor) getSession().get(Conductor.class,id);
-		ConductorDecorator conductor = new ConductorDecorator(conductorAux);
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		aMap.put("Nombre de Usuario", conductor.getNombre());
-		aMap.put("Viajes realizados", conductor.getViajes().size());
-		aMap.put("Puntaje promedio", conductor.getCalificacion());
-		aMap.put("Fecha de Licencia", conductor.getFechaLicencia());
+		ConductorDTO conductorDTO = new ConductorDTO(DAOFactory.getInstance().getConductorDAO().recuperar(id));
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
+		return gson.toJson(conductorDTO);
 	}
 
 	@RequestMapping(value = "/viajes/nuevo/", method = RequestMethod.POST, produces = "application/json", headers = "Accept=application/json")
@@ -154,14 +119,10 @@ public class MuberRestController {
 			,@RequestParam(value="costoTotal") float costoTotal
 			,@RequestParam(value="cantidadPasajeros") int cantPasajeros){
 
-		Session session = getSession();
-		Conductor conductor = (Conductor) session.get(Conductor.class,conductorID);
+		Conductor conductor = DAOFactory.getInstance().getConductorDAO().recuperar(conductorID);
 		Viaje viaje = new Viaje(destino,origen,cantPasajeros,costoTotal,conductor);
 		conductor.addViaje(viaje);
-		Transaction tx = session.beginTransaction();
-		session.persist(viaje);
-		tx.commit();
-
+		DAOFactory.getInstance().getViajeDAO().persistir(viaje);
 		Map<String, Object> aMap = new HashMap<String, Object>();
 		aMap.put("Response", "Viaje generado con exito");
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -175,17 +136,14 @@ public class MuberRestController {
 			,@RequestParam(value="puntaje") double puntaje
 			,@RequestParam(value="comentario") String comentario){
 
-		Session session = getSession();
-		Viaje viaje = (Viaje) session.get(Viaje.class, viajeID);
-		Pasajero pasajero = (Pasajero) session.get(Pasajero.class, pasajeroID);
+		Viaje viaje = DAOFactory.getInstance().getViajeDAO().recuperar(viajeID);
+		Pasajero pasajero = DAOFactory.getInstance().getPasajeroDAO().recuperar(pasajeroID);
 
 		Calificacion calificacion = new Calificacion(comentario,puntaje,pasajero);
 
-
-		Transaction tx = session.beginTransaction();
 		viaje.addCalificacion(calificacion);
-		tx.commit();
-
+		
+		DAOFactory.getInstance().getViajeDAO().actualizar(viaje);
 		Map<String, Object> aMap = new HashMap<String, Object>();
 		aMap.put("Response", "Calificacion agregada con exito");
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -194,35 +152,27 @@ public class MuberRestController {
 
 	@RequestMapping(value = "/conductores/top10", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductoresTop10() {
-		List<ConductorDecorator> conductoresTop10 = (new ConductorService().getTop10Conductors());
-		LinkedHashMap<String, Object> aMap2 = new LinkedHashMap<String, Object>();
-		int i = 1;
-		for (ConductorDecorator conductor : conductoresTop10) {
-			LinkedHashMap<String, Object> aMap = new LinkedHashMap<String, Object>();
-			aMap.put("Nombre de Usuario", conductor.getNombre());
-			aMap.put("Viajes realizados", conductor.getViajes().size());
-			aMap.put("Puntaje promedio", conductor.getCalificacion());
-			aMap.put("Fecha de Licencia", conductor.getFechaLicencia());
-			aMap2.put("Puesto : "+Integer.toString(i),aMap);
-			i++;
+		List<Conductor> conductoresTop10 = ServiceFactory.getInstance().getConductorService().getTop10Conductors();
+		List<ConductorDTO> conductoresDTOTop10 = new ArrayList<ConductorDTO>();
+		for (Conductor conductor : conductoresTop10) {
+			conductoresDTOTop10.add(new ConductorDTO(conductor));
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap2);
+		return gson.toJson(conductoresDTOTop10);
 	}
 
 	@RequestMapping(value = "/viajes/agregarPasajero", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
 	public String agregarPasajero(@RequestParam int pasajeroId, @RequestParam int viajeId) {
-		Session session = getSession();
 
-		Pasajero pasajero = (Pasajero) session.get(Pasajero.class,pasajeroId);
-		Viaje viaje = (Viaje) session.get(Viaje.class,viajeId);
+		Pasajero pasajero = DAOFactory.getInstance().getPasajeroDAO().recuperar(pasajeroId);
+		Viaje viaje = DAOFactory.getInstance().getViajeDAO().recuperar(viajeId);
 
-		Transaction tx = session.beginTransaction();
 		Boolean seAgregoPasajero = viaje.addPasajero(pasajero);
-		tx.commit();
+		
 		Map<String, Object> aMap = new HashMap<String, Object>();
 		if (!viaje.isFinalizado()){
 			if (seAgregoPasajero){
+				DAOFactory.getInstance().getViajeDAO().actualizar(viaje);
 				aMap.put("Respuesta","Se pudo agregar el pasajero");
 			}else{
 				aMap.put("Respuesta","No se pudo agregar el pasajero");
@@ -237,13 +187,13 @@ public class MuberRestController {
 
 	@RequestMapping(value = "/pasajeros/cargarCredito", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
 	public String agregarCreditoAPasajero(@RequestParam int pasajeroId, @RequestParam double monto) {
-		Session session = getSession();
+		
+		Pasajero pasajero = DAOFactory.getInstance().getPasajeroDAO().recuperar(pasajeroId);
 
-		Pasajero pasajero = (Pasajero) session.get(Pasajero.class,pasajeroId);
-
-		Transaction tx = session.beginTransaction();
 		pasajero.addCredito(monto);
-		tx.commit();
+		
+		DAOFactory.getInstance().getPasajeroDAO().actualizar(pasajero);
+		
 		Map<String, Object> aMap = new HashMap<String, Object>();
 		aMap.put("Respuesta","Se agrego el credito");
 
@@ -253,16 +203,14 @@ public class MuberRestController {
 
 	@RequestMapping(value = "/viajes/finalizar", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
 	public String finalizarViaje(@RequestParam int viajeId) {
-		Session session = getSession();
 
-		Viaje viaje = (Viaje) session.get(Viaje.class,viajeId);
+		Viaje viaje = DAOFactory.getInstance().getViajeDAO().recuperar(viajeId);
 		Map<String, Object> aMap = new HashMap<String, Object>();
 		if (viaje.isFinalizado()){
 			aMap.put("Respuesta","El viaje ya estaba finalizado");
 		}else{
-			Transaction tx = session.beginTransaction();
-			viaje.setFinalizado(true);
-			tx.commit();
+			viaje.finalizar();
+			DAOFactory.getInstance().getViajeDAO().actualizar(viaje);
 			aMap.put("Respuesta","Se finalizo el viaje");
 		}
 
@@ -270,4 +218,5 @@ public class MuberRestController {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(aMap);
 	}
+	
 }

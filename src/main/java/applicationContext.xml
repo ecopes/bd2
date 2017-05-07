@@ -1,22 +1,124 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/tx 
        http://www.springframework.org/schema/tx/spring-tx-3.1.xsd 
+       http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
        http://www.springframework.org/schema/jdbc 
        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+	<mvc:annotation-driven />
+	<context:annotation-config />
+	<context:component-scan base-package="bd2.Muber.daoHibernateImp b2.web" />
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingLocations" value="classpath:hibernate/*.hbm.xml" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.connection.autocommit">true</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+				<prop key="hibernate.event.merge.entity_copy_observer">allow</prop>
+			</props>
+		</property>
+	</bean>
 
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"/>
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/grupo15"/>
+		<property name="user" value="grupo15" />
+		<property name="password" value="grupo15" />
+		<property name="acquireIncrement" value="2" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="1" />
+		<property name="maxIdleTime" value="600" />
+	</bean>
 
-	 <import resource="classpath:hibernate.cfg.xml" />
-	<!--<import resource="hibernate.cfg.xml" />-->
-	
+	<!-- Comienzo DAO Factory -->
+	<bean id="DAOFactory" class="bd2.Muber.daoHibernateImp.DAOFactory"
+		factory-method="getInstance">
+		<property name="calificacionDAO">
+			<ref bean="CalificacionDAO" />
+		</property>
+		<property name="conductorDAO">
+			<ref bean="ConductorDAO" />
+		</property>
+		<property name="muberDAO">
+			<ref bean="MuberDAO" />
+		</property>
+		<property name="pasajeroDAO">
+			<ref bean="PasajeroDAO" />
+		</property>
+		<property name="viajeDAO">
+			<ref bean="ViajeDAO" />
+		</property>
+	</bean>
 
+	<!-- Fin DAO Factory -->
 
+	<!-- Comienzo DAOS -->
+
+	<bean id="CalificacionDAO" class="bd2.Muber.daoHibernateImp.CalificacionHibernateDaoImp">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
+	<bean id="ConductorDAO" class="bd2.Muber.daoHibernateImp.ConductorHibernateDaoImp">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
+	<bean id="MuberDAO" class="bd2.Muber.daoHibernateImp.MuberHibernateDaoImp">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
+	<bean id="PasajeroDAO" class="bd2.Muber.daoHibernateImp.PasajeroHibernateDaoImp">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
+	<bean id="ViajeDAO" class="bd2.Muber.daoHibernateImp.ViajeHibernateDaoImp">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
+	<!-- Fin DAOS -->
+
+	<!-- Comienzo Services Factory -->
+	<bean id="ServiceFactory" class="bd2.Muber.service.ServiceFactory" factory-method="getInstance">
+		<property name="conductorService">
+			<ref bean="ConductorService" />
+		</property>
+	</bean>
+	<!-- Fin Services Factory -->
+
+	<!-- Comienzo Services -->
+	<bean id="ConductorService" class="bd2.Muber.service.ConductorService">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
+	<!-- Fin Services -->
+
+	<!-- Comienzo Manejador de Transacciones -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- Fin Manejador de Transacciones -->
 </beans>
    
 
