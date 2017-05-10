@@ -4,7 +4,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 import bd2.Muber.model.Conductor;
-import bd2.Muber.service.ServiceFactory;
+import bd2.Muber.serviceIMP.ServiceLocator;
 
 public class ConductorDTO extends UsuarioDTO{
 
@@ -16,7 +16,7 @@ public class ConductorDTO extends UsuarioDTO{
 		super(conductor);
 		Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		this.fechaLicencia = formatter.format(conductor.getFechaLicencia());
-		this.calificacionPromedio = ServiceFactory.getInstance().getConductorService().getCalificacion(conductor);
+		this.calificacionPromedio = ServiceLocator.getInstance().getConductorService().getCalificacion(conductor);
 		
 	}
 

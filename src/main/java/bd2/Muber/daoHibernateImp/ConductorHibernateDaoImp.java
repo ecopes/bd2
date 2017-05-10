@@ -9,5 +9,4 @@ public class ConductorHibernateDaoImp extends GenericDaoHibernateImp<Conductor> 
 	public ConductorHibernateDaoImp(SessionFactory sessionFactory) {
 		super(sessionFactory, Conductor.class);
 	}
-
 }

@@ -17,7 +17,9 @@
 	<context:annotation-config />
 	<context:component-scan base-package="bd2.Muber.daoHibernateImp b2.web" />
 	<!-- Comienzo Configuration File -->
-	<context:property-placeholder system-properties-mode="OVERRIDE" location="classpath:config_#{systemProperties['spring.profiles.active']}.properties"/>
+	<context:property-placeholder
+		system-properties-mode="OVERRIDE"
+		location="classpath:config_#{systemProperties['spring.profiles.active']}.properties" />
 	<!-- Fin Configuration File -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -38,8 +40,8 @@
 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
-		<property name="driverClass" value="${spring.datasource.driverClass}"/>
-		<property name="jdbcUrl" value="${spring.datasource.jdbcUrl}"/>
+		<property name="driverClass" value="${spring.datasource.driverClass}" />
+		<property name="jdbcUrl" value="${spring.datasource.jdbcUrl}" />
 		<property name="user" value="${spring.datasource.user}" />
 		<property name="password" value="${spring.datasource.password}" />
 		<property name="acquireIncrement" value="2" />
@@ -48,8 +50,8 @@
 		<property name="maxIdleTime" value="600" />
 	</bean>
 
-	<!-- Comienzo DAO Factory -->
-	<bean id="DAOFactory" class="bd2.Muber.daoHibernateImp.DAOFactory"
+	<!-- Comienzo DAOLocator -->
+	<bean id="DAOLocator" class="bd2.Muber.daoHibernateImp.DAOLocator"
 		factory-method="getInstance">
 		<property name="calificacionDAO">
 			<ref bean="CalificacionDAO" />
@@ -68,7 +70,7 @@
 		</property>
 	</bean>
 
-	<!-- Fin DAO Factory -->
+	<!-- Fin DAOLocator -->
 
 	<!-- Comienzo DAOS -->
 
@@ -99,19 +101,77 @@
 	</bean>
 	<!-- Fin DAOS -->
 
-	<!-- Comienzo Services Factory -->
-	<bean id="ServiceFactory" class="bd2.Muber.service.ServiceFactory" factory-method="getInstance">
+	<!-- Comienzo ServiceLocator -->
+	<bean id="serviceLocator" class="bd2.Muber.serviceIMP.ServiceLocator"
+		factory-method="getInstance">
 		<property name="conductorService">
-			<ref bean="ConductorService" />
+			<ref bean="conductorService" />
+		</property>
+		<property name="pasajeroService">
+			<ref bean="pasajeroService" />
+		</property>
+		<property name="viajeService">
+			<ref bean="viajeService" />
 		</property>
 	</bean>
-	<!-- Fin Services Factory -->
+	<!-- Fin ServiceLocator -->
 
 	<!-- Comienzo Services -->
-	<bean id="ConductorService" class="bd2.Muber.service.ConductorService">
-		<constructor-arg>
-			<ref bean="sessionFactory" />
-		</constructor-arg>
+	<bean id="conductorServiceTarget" class="bd2.Muber.serviceIMP.ConductorServiceIMP">
+	</bean>
+
+	<bean id="conductorService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref bean="conductorServiceTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+
+	</bean>
+	
+	<bean id="pasajeroServiceTarget" class="bd2.Muber.serviceIMP.PasajeroServiceIMP">
+	</bean>
+
+	<bean id="pasajeroService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref bean="pasajeroServiceTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+
+	</bean>
+	
+	<bean id="viajeServiceTarget" class="bd2.Muber.serviceIMP.ViajeServiceIMP">
+	</bean>
+
+	<bean id="viajeService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref bean="viajeServiceTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+
 	</bean>
 	<!-- Fin Services -->
 
@@ -120,9 +180,6 @@
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
 	<!-- Fin Manejador de Transacciones -->
 </beans>
-   
-
-	

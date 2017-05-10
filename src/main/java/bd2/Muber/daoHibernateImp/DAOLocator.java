@@ -1,8 +1,8 @@
 package bd2.Muber.daoHibernateImp;
 
-public class DAOFactory {
+public class DAOLocator {
 	
-	protected static DAOFactory instance = null;
+	protected static DAOLocator instance = null;
 	
 	protected CalificacionHibernateDaoImp calificacionDAO;
 	protected ConductorHibernateDaoImp conductorDAO;
@@ -10,15 +10,15 @@ public class DAOFactory {
 	protected PasajeroHibernateDaoImp pasajeroDAO;
 	protected ViajeHibernateDaoImp viajeDAO;
 	
-	public static DAOFactory getInstance()
+	public static DAOLocator getInstance()
 	{
 		if (instance == null){
-			instance = new DAOFactory();
+			instance = new DAOLocator();
 		}
 			return instance;
 	}
 
-	public DAOFactory() {
+	public DAOLocator() {
 	}
 
 	public CalificacionHibernateDaoImp getCalificacionDAO() {

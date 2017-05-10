@@ -1,8 +1,6 @@
 package bd2.web;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,22 +13,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import bd2.Muber.DTO.ConductorDTO;
-import bd2.Muber.DTO.PasajeroDTO;
-import bd2.Muber.DTO.ViajeDTO;
-import bd2.Muber.daoHibernateImp.DAOFactory;
-import bd2.Muber.model.Calificacion;
-import bd2.Muber.model.Conductor;
-import bd2.Muber.model.Pasajero;
-import bd2.Muber.model.Viaje;
-import bd2.Muber.service.ServiceFactory;
+import bd2.Muber.serviceIMP.ServiceLocator;
 
 @ControllerAdvice
 @RequestMapping("/services")
 @ResponseBody
 @EnableWebMvc
 public class MuberRestController {
-
 	@RequestMapping(value = "/listarWS", method = RequestMethod.GET)
 	public String example() {
 		String pagina = "<!DOCTYPE html><html><head><title>Listado de los ws</title></head><body>"
@@ -75,40 +64,26 @@ public class MuberRestController {
 
 	@RequestMapping(value = "/pasajeros", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String pasajeros() {
-		List<PasajeroDTO> pasajerosDTO = new ArrayList<PasajeroDTO>();
-		for (Pasajero pasajero : DAOFactory.getInstance().getPasajeroDAO().recuperarTodos()) {
-		 pasajerosDTO.add(new PasajeroDTO(pasajero));
-		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(pasajerosDTO);
+		return gson.toJson(ServiceLocator.getInstance().getPasajeroService().getPasajeros());
 	}
 
 	@RequestMapping(value = "/conductores", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductores() {
-		List<ConductorDTO> conductoresDTO = new ArrayList<ConductorDTO>();  
-		for (Conductor conductor : DAOFactory.getInstance().getConductorDAO().recuperarTodos()) {
-			conductoresDTO.add(new ConductorDTO(conductor));
-		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(conductoresDTO);
+		return gson.toJson(ServiceLocator.getInstance().getConductorService().getConductores());
 	}
 
 	@RequestMapping(value = "/viajes/abiertos", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String viajesAbiertos() {
-		
-		List<ViajeDTO> viajesDTO = new ArrayList<ViajeDTO>();
-		for (Viaje viaje : DAOFactory.getInstance().getViajeDAO().getViajesAbiertos()) {
-			viajesDTO.add(new ViajeDTO(viaje));
-		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(viajesDTO);
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().getViajesAbiertos());
 	}
 
 	@RequestMapping(value = "/conductores/detalle/", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductoresDetalle(@RequestParam(value="conductorId") int id) {
-		ConductorDTO conductorDTO = new ConductorDTO(DAOFactory.getInstance().getConductorDAO().recuperar(id));
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(conductorDTO);
+		return gson.toJson(ServiceLocator.getInstance().getConductorService().getConductor(id));
 	}
 
 	@RequestMapping(value = "/viajes/nuevo/", method = RequestMethod.POST, produces = "application/json", headers = "Accept=application/json")
@@ -119,14 +94,8 @@ public class MuberRestController {
 			,@RequestParam(value="costoTotal") float costoTotal
 			,@RequestParam(value="cantidadPasajeros") int cantPasajeros){
 
-		Conductor conductor = DAOFactory.getInstance().getConductorDAO().recuperar(conductorID);
-		Viaje viaje = new Viaje(destino,origen,cantPasajeros,costoTotal,conductor);
-		conductor.addViaje(viaje);
-		DAOFactory.getInstance().getViajeDAO().persistir(viaje);
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		aMap.put("Response", "Viaje generado con exito");
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().agregarViaje(destino, origen, cantPasajeros, costoTotal, conductorID));
 	}
 
 	@RequestMapping(value = "/viajes/calificar/", method = RequestMethod.POST, produces = "application/json", headers = "Accept=application/json")
@@ -136,87 +105,37 @@ public class MuberRestController {
 			,@RequestParam(value="puntaje") double puntaje
 			,@RequestParam(value="comentario") String comentario){
 
-		Viaje viaje = DAOFactory.getInstance().getViajeDAO().recuperar(viajeID);
-		Pasajero pasajero = DAOFactory.getInstance().getPasajeroDAO().recuperar(pasajeroID);
-
-		Calificacion calificacion = new Calificacion(comentario,puntaje,pasajero);
-
-		viaje.addCalificacion(calificacion);
 		
-		DAOFactory.getInstance().getViajeDAO().actualizar(viaje);
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		aMap.put("Response", "Calificacion agregada con exito");
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().comentarViaje(viajeID, pasajeroID, puntaje, comentario));
 	}
 
 	@RequestMapping(value = "/conductores/top10", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String conductoresTop10() {
-		List<Conductor> conductoresTop10 = ServiceFactory.getInstance().getConductorService().getTop10Conductors();
-		List<ConductorDTO> conductoresDTOTop10 = new ArrayList<ConductorDTO>();
-		for (Conductor conductor : conductoresTop10) {
-			conductoresDTOTop10.add(new ConductorDTO(conductor));
-		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(conductoresDTOTop10);
+		return gson.toJson(ServiceLocator.getInstance().getConductorService().getTop10Conductors());
 	}
 
 	@RequestMapping(value = "/viajes/agregarPasajero", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
 	public String agregarPasajero(@RequestParam int pasajeroId, @RequestParam int viajeId) {
-
-		Pasajero pasajero = DAOFactory.getInstance().getPasajeroDAO().recuperar(pasajeroId);
-		Viaje viaje = DAOFactory.getInstance().getViajeDAO().recuperar(viajeId);
-
-		Boolean seAgregoPasajero = viaje.addPasajero(pasajero);
-		
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		if (!viaje.isFinalizado()){
-			if (seAgregoPasajero){
-				DAOFactory.getInstance().getViajeDAO().actualizar(viaje);
-				aMap.put("Respuesta","Se pudo agregar el pasajero");
-			}else{
-				aMap.put("Respuesta","No se pudo agregar el pasajero");
-			}
-		}else{
-			aMap.put("Respuesta","El viaje esta finalizado");
-		}
-
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().agregarPasajero(pasajeroId, viajeId));
 	}
 
 	@RequestMapping(value = "/pasajeros/cargarCredito", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
 	public String agregarCreditoAPasajero(@RequestParam int pasajeroId, @RequestParam double monto) {
 		
-		Pasajero pasajero = DAOFactory.getInstance().getPasajeroDAO().recuperar(pasajeroId);
-
-		pasajero.addCredito(monto);
-		
-		DAOFactory.getInstance().getPasajeroDAO().actualizar(pasajero);
-		
+		ServiceLocator.getInstance().getPasajeroService().cargarCredito(pasajeroId, monto);
 		Map<String, Object> aMap = new HashMap<String, Object>();
 		aMap.put("Respuesta","Se agrego el credito");
-
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(aMap);
 	}
 
 	@RequestMapping(value = "/viajes/finalizar", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
 	public String finalizarViaje(@RequestParam int viajeId) {
-
-		Viaje viaje = DAOFactory.getInstance().getViajeDAO().recuperar(viajeId);
-		Map<String, Object> aMap = new HashMap<String, Object>();
-		if (viaje.isFinalizado()){
-			aMap.put("Respuesta","El viaje ya estaba finalizado");
-		}else{
-			viaje.finalizar();
-			DAOFactory.getInstance().getViajeDAO().actualizar(viaje);
-			aMap.put("Respuesta","Se finalizo el viaje");
-		}
-
-
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(aMap);
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().finalizarViaje(viajeId));
 	}
 	
 }

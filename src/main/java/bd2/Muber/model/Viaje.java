@@ -99,8 +99,8 @@ public class Viaje{
 	}
 
 	public boolean addPasajero(Pasajero pasajero){
-		// me fijo si no finalizo el viaje
-		if (this.getCantidadMaximaPasajeros() > this.getPasajeros().size()){
+		// me fijo que el viaje no este lleno, no este finalizado y no se encuentre ya el pasajero
+		if (this.getCantidadMaximaPasajeros() > this.getPasajeros().size() && !this.isFinalizado() && !this.getPasajeros().contains(pasajero)){
 			this.pasajeros.add(pasajero);
 			return true;
 		}
