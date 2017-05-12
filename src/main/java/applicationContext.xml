@@ -15,7 +15,7 @@
 
 	<mvc:annotation-driven />
 	<context:annotation-config />
-	<context:component-scan base-package="bd2.Muber.daoHibernateImp b2.web" />
+	<context:component-scan base-package="bd2.Muber.RepositoryHibernateImp b2.web" />
 	<!-- Comienzo Configuration File -->
 	<context:property-placeholder
 		system-properties-mode="OVERRIDE"
@@ -50,56 +50,56 @@
 		<property name="maxIdleTime" value="600" />
 	</bean>
 
-	<!-- Comienzo DAOLocator -->
-	<bean id="DAOLocator" class="bd2.Muber.daoHibernateImp.DAOLocator"
+	<!-- Comienzo RepositoryLocator -->
+	<bean id="RepositoryLocator" class="bd2.Muber.RepositoryHibernateImp.RepositoryLocator"
 		factory-method="getInstance">
-		<property name="calificacionDAO">
-			<ref bean="CalificacionDAO" />
+		<property name="calificacionRepository">
+			<ref bean="CalificacionRepository" />
 		</property>
-		<property name="conductorDAO">
-			<ref bean="ConductorDAO" />
+		<property name="conductorRepository">
+			<ref bean="ConductorRepository" />
 		</property>
-		<property name="muberDAO">
-			<ref bean="MuberDAO" />
+		<property name="muberRepository">
+			<ref bean="MuberRepository" />
 		</property>
-		<property name="pasajeroDAO">
-			<ref bean="PasajeroDAO" />
+		<property name="pasajeroRepository">
+			<ref bean="PasajeroRepository" />
 		</property>
-		<property name="viajeDAO">
-			<ref bean="ViajeDAO" />
+		<property name="viajeRepository">
+			<ref bean="ViajeRepository" />
 		</property>
 	</bean>
 
-	<!-- Fin DAOLocator -->
+	<!-- Fin RepositoryLocator -->
 
-	<!-- Comienzo DAOS -->
+	<!-- Comienzo Repository -->
 
-	<bean id="CalificacionDAO" class="bd2.Muber.daoHibernateImp.CalificacionHibernateDaoImp">
+	<bean id="CalificacionRepository" class="bd2.Muber.RepositoryHibernateImp.CalificacionHibernateRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<bean id="ConductorDAO" class="bd2.Muber.daoHibernateImp.ConductorHibernateDaoImp">
+	<bean id="ConductorRepository" class="bd2.Muber.RepositoryHibernateImp.ConductorHibernateRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<bean id="MuberDAO" class="bd2.Muber.daoHibernateImp.MuberHibernateDaoImp">
+	<bean id="MuberRepository" class="bd2.Muber.RepositoryHibernateImp.MuberHibernateRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<bean id="PasajeroDAO" class="bd2.Muber.daoHibernateImp.PasajeroHibernateDaoImp">
+	<bean id="PasajeroRepository" class="bd2.Muber.RepositoryHibernateImp.PasajeroHibernateRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<bean id="ViajeDAO" class="bd2.Muber.daoHibernateImp.ViajeHibernateDaoImp">
+	<bean id="ViajeRepository" class="bd2.Muber.RepositoryHibernateImp.ViajeHibernateRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<!-- Fin DAOS -->
+	<!-- Fin Repository -->
 
 	<!-- Comienzo ServiceLocator -->
 	<bean id="serviceLocator" class="bd2.Muber.serviceIMP.ServiceLocator"

@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import bd2.Muber.DTO.ConductorDTO;
-import bd2.Muber.daoHibernateImp.DAOLocator;
+import bd2.Muber.RepositoryHibernateImp.RepositoryLocator;
 import bd2.Muber.model.Calificacion;
 import bd2.Muber.model.Conductor;
 import bd2.Muber.model.Viaje;
@@ -20,7 +20,7 @@ public class ConductorServiceIMP implements ConductorServiceINT{
 	{
 	}
 	public List<ConductorDTO> getTop10Conductors(){
-		List<Conductor> conductoresTop10 = DAOLocator.getInstance().getConductorDAO().recuperarTodos();
+		List<Conductor> conductoresTop10 = RepositoryLocator.getInstance().getConductorRepository().recuperarTodos();
 		Collections.sort(conductoresTop10, (c1, c2) -> compareTo(c1, c2));
 		List<ConductorDTO> conductoresDTOTop10 = new ArrayList<ConductorDTO>();
 		if (conductoresTop10.size()<=10){
@@ -64,7 +64,7 @@ public class ConductorServiceIMP implements ConductorServiceINT{
 
 	public List<ConductorDTO> getConductores() {
 		List<ConductorDTO> conductoresDTO = new ArrayList<ConductorDTO>();  
-		for (Conductor conductor : DAOLocator.getInstance().getConductorDAO().recuperarTodos()) {
+		for (Conductor conductor : RepositoryLocator.getInstance().getConductorRepository().recuperarTodos()) {
 			conductoresDTO.add(new ConductorDTO(conductor));
 		}
 		return conductoresDTO;
@@ -72,11 +72,10 @@ public class ConductorServiceIMP implements ConductorServiceINT{
 	@Override
 	public ConductorDTO getConductor(int idConductor) {
 		try{
-			ConductorDTO conductorDTO = new ConductorDTO(DAOLocator.getInstance().getConductorDAO().recuperar(idConductor));
+			ConductorDTO conductorDTO = new ConductorDTO(RepositoryLocator.getInstance().getConductorRepository().recuperar(idConductor));
 			return conductorDTO;
 		}catch (NullPointerException e){
 			return null;
 		}
 	}
 }
-

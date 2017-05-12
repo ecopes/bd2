@@ -105,7 +105,6 @@ public class MuberRestController {
 			,@RequestParam(value="puntaje") double puntaje
 			,@RequestParam(value="comentario") String comentario){
 
-		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(ServiceLocator.getInstance().getViajeService().comentarViaje(viajeID, pasajeroID, puntaje, comentario));
 	}

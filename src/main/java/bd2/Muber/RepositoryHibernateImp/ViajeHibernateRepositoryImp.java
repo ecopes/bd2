@@ -1,4 +1,4 @@
-package bd2.Muber.daoHibernateImp;
+package bd2.Muber.RepositoryHibernateImp;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import org.hibernate.SessionFactory;
 
 import bd2.Muber.model.Viaje;
 
-public class ViajeHibernateDaoImp extends GenericDaoHibernateImp<Viaje> {
+public class ViajeHibernateRepositoryImp extends GenericRepositoryHibernateImp<Viaje> {
 
-	public ViajeHibernateDaoImp(SessionFactory sessionFactory) {
+	public ViajeHibernateRepositoryImp(SessionFactory sessionFactory) {
 		super(sessionFactory,Viaje.class);
 	}
 	

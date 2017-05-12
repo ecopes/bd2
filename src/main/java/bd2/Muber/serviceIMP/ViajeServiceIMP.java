@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd2.Muber.DTO.ViajeDTO;
-import bd2.Muber.daoHibernateImp.DAOLocator;
+import bd2.Muber.RepositoryHibernateImp.RepositoryLocator;
 import bd2.Muber.model.Calificacion;
 import bd2.Muber.model.Conductor;
 import bd2.Muber.model.Pasajero;
@@ -15,7 +15,7 @@ public class ViajeServiceIMP implements ViajeServiceINT {
 
 	public List<ViajeDTO> getViajesAbiertos(){
 		List<ViajeDTO> viajesDTO = new ArrayList<ViajeDTO>();
-		for (Viaje viaje : DAOLocator.getInstance().getViajeDAO().getViajesAbiertos()) {
+		for (Viaje viaje : RepositoryLocator.getInstance().getViajeRepository().getViajesAbiertos()) {
 			viajesDTO.add(new ViajeDTO(viaje));
 		}
 		return viajesDTO;
@@ -24,17 +24,17 @@ public class ViajeServiceIMP implements ViajeServiceINT {
 	@Override
 	public boolean agregarViaje(String destino, String origen, int cantidadMaximaPasajeros, double costoTotal,
 			int conductorID) {
-		Conductor conductor = DAOLocator.getInstance().getConductorDAO().recuperar(conductorID);
+		Conductor conductor = RepositoryLocator.getInstance().getConductorRepository().recuperar(conductorID);
 		Viaje viaje = new Viaje(destino,origen,cantidadMaximaPasajeros,costoTotal,conductor);
 		conductor.addViaje(viaje);
-		DAOLocator.getInstance().getViajeDAO().persistir(viaje);
+		RepositoryLocator.getInstance().getMuberRepository().getMuber().addViaje(viaje);
 		return true;
 	}
 
 	@Override
 	public boolean comentarViaje(int viajeID, int pasajeroID, double puntaje, String comentario) {
-		Viaje viaje = DAOLocator.getInstance().getViajeDAO().recuperar(viajeID);
-		Pasajero pasajero = DAOLocator.getInstance().getPasajeroDAO().recuperar(pasajeroID);
+		Viaje viaje = RepositoryLocator.getInstance().getViajeRepository().recuperar(viajeID);
+		Pasajero pasajero = RepositoryLocator.getInstance().getPasajeroRepository().recuperar(pasajeroID);
 
 		Calificacion calificacion = new Calificacion(comentario,puntaje,pasajero);
 
@@ -48,7 +48,6 @@ public class ViajeServiceIMP implements ViajeServiceINT {
 		// me fijo si el pasajero es pasajero del viaje y que no califico
 		if (viaje.getPasajeros().contains(pasajero) && !yaCalifico){
 			viaje.addCalificacion(calificacion);
-			DAOLocator.getInstance().getViajeDAO().actualizar(viaje);
 			return true;
 		}else{
 			return false;
@@ -57,13 +56,12 @@ public class ViajeServiceIMP implements ViajeServiceINT {
 
 	@Override
 	public boolean agregarPasajero(int pasajeroID, int viajeID) {
-		Pasajero pasajero = DAOLocator.getInstance().getPasajeroDAO().recuperar(pasajeroID);
-		Viaje viaje = DAOLocator.getInstance().getViajeDAO().recuperar(viajeID);
+		Pasajero pasajero = RepositoryLocator.getInstance().getPasajeroRepository().recuperar(pasajeroID);
+		Viaje viaje = RepositoryLocator.getInstance().getViajeRepository().recuperar(viajeID);
 
 		Boolean seAgregoPasajero = viaje.addPasajero(pasajero);
 
 		if (seAgregoPasajero){
-			DAOLocator.getInstance().getViajeDAO().actualizar(viaje);
 			return true;
 		}
 		return false;
@@ -71,10 +69,9 @@ public class ViajeServiceIMP implements ViajeServiceINT {
 
 	@Override
 	public boolean finalizarViaje(int viajeID) {
-		Viaje viaje = DAOLocator.getInstance().getViajeDAO().recuperar(viajeID);
+		Viaje viaje = RepositoryLocator.getInstance().getViajeRepository().recuperar(viajeID);
 		if (!viaje.isFinalizado()){
 			viaje.finalizar();
-			DAOLocator.getInstance().getViajeDAO().actualizar(viaje);
 			return true;
 		}
 		return false;
