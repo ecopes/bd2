@@ -20,7 +20,7 @@ public class ConductorServiceIMP implements ConductorServiceINT{
 	{
 	}
 	public List<ConductorDTO> getTop10Conductors(){
-		List<Conductor> conductoresTop10 = RepositoryLocator.getInstance().getConductorRepository().recuperarTodos();
+		List<Conductor> conductoresTop10 = RepositoryLocator.getInstance().getConductorRepository().getConductoresSinViajesAbiertos();
 		Collections.sort(conductoresTop10, (c1, c2) -> compareTo(c1, c2));
 		List<ConductorDTO> conductoresDTOTop10 = new ArrayList<ConductorDTO>();
 		if (conductoresTop10.size()<=10){
