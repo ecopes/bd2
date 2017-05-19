@@ -1,23 +1,20 @@
-package bd2.Muber.RepositoryHibernateImp;
+package bd2.Muber.repository;
 
 import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class GenericRepositoryHibernateImp<T> {
+public class GenericRepositoryImp<T> {
 
 	protected Class<T> persistentClass;
 
 	private SessionFactory sessionFactory;
 
-	public GenericRepositoryHibernateImp(SessionFactory sessionFactory,Class<T> clase) {
+	public GenericRepositoryImp(SessionFactory sessionFactory,Class<T> clase) {
 		this.setPersistentClass(clase);
 		this.sessionFactory = sessionFactory;
 	}
@@ -43,11 +40,8 @@ public class GenericRepositoryHibernateImp<T> {
 	}
 
 	public List<T> recuperarTodos() {
-
-		Query query = getCurrentSession().createQuery("from "+getPersistentClass().getName());
 		@SuppressWarnings("unchecked")
-		List<T> resultado = (List<T>) query.list();
-
+		List<T> resultado = getCurrentSession().createCriteria(getPersistentClass()).list();
 		return resultado;
 	}
 

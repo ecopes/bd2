@@ -15,7 +15,7 @@
 
 	<mvc:annotation-driven />
 	<context:annotation-config />
-	<context:component-scan base-package="bd2.Muber.RepositoryHibernateImp b2.web" />
+	<context:component-scan base-package="bd2.Muber.repository b2.web" />
 	<!-- Comienzo Configuration File -->
 	<context:property-placeholder
 		system-properties-mode="OVERRIDE"
@@ -51,7 +51,7 @@
 	</bean>
 
 	<!-- Comienzo RepositoryLocator -->
-	<bean id="RepositoryLocator" class="bd2.Muber.RepositoryHibernateImp.RepositoryLocator"
+	<bean id="RepositoryLocator" class="bd2.Muber.repository.RepositoryLocator"
 		factory-method="getInstance">
 		<property name="calificacionRepository">
 			<ref bean="CalificacionRepository" />
@@ -73,31 +73,106 @@
 	<!-- Fin RepositoryLocator -->
 
 	<!-- Comienzo Repository -->
+	<bean id="CalificacionRepositoryTarget" class="bd2.Muber.repository.CalificacionRepositoryImp">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
 
-	<bean id="CalificacionRepository" class="bd2.Muber.RepositoryHibernateImp.CalificacionHibernateRepositoryImp">
+	<bean id="CalificacionRepository"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref bean="CalificacionRepositoryTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+
+	</bean>
+	<bean id="ConductorRepositoryTarget" class="bd2.Muber.repository.ConductorRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<bean id="ConductorRepository" class="bd2.Muber.RepositoryHibernateImp.ConductorHibernateRepositoryImp">
+	<bean id="ConductorRepository"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref bean="ConductorRepositoryTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+
+	</bean>
+	<bean id="MuberRepositoryTarget" class="bd2.Muber.repository.MuberRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<bean id="MuberRepository" class="bd2.Muber.RepositoryHibernateImp.MuberHibernateRepositoryImp">
+	<bean id="MuberRepository"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref bean="MuberRepositoryTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+
+	</bean>
+	<bean id="PasajeroRepositoryTarget" class="bd2.Muber.repository.PasajeroRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<bean id="PasajeroRepository" class="bd2.Muber.RepositoryHibernateImp.PasajeroHibernateRepositoryImp">
+	<bean id="PasajeroRepository"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref bean="PasajeroRepositoryTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+
+	</bean>
+	<bean id="ViajeRepositoryTarget" class="bd2.Muber.repository.ViajeRepositoryImp">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	<bean id="ViajeRepository" class="bd2.Muber.RepositoryHibernateImp.ViajeHibernateRepositoryImp">
-		<constructor-arg>
-			<ref bean="sessionFactory" />
-		</constructor-arg>
+	<bean id="ViajeRepository"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref bean="ViajeRepositoryTarget" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+
 	</bean>
 	<!-- Fin Repository -->
 
@@ -135,7 +210,7 @@
 		</property>
 
 	</bean>
-	
+
 	<bean id="pasajeroServiceTarget" class="bd2.Muber.serviceIMP.PasajeroServiceIMP">
 	</bean>
 
@@ -154,7 +229,7 @@
 		</property>
 
 	</bean>
-	
+
 	<bean id="viajeServiceTarget" class="bd2.Muber.serviceIMP.ViajeServiceIMP">
 	</bean>
 
@@ -180,6 +255,7 @@
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
 	<!-- Fin Manejador de Transacciones -->
 </beans>

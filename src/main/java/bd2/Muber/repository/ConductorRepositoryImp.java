@@ -1,4 +1,4 @@
-package bd2.Muber.RepositoryHibernateImp;
+package bd2.Muber.repository;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import org.hibernate.SessionFactory;
 
 import bd2.Muber.model.Conductor;
 
-public class ConductorHibernateRepositoryImp extends GenericRepositoryHibernateImp<Conductor> {
+public class ConductorRepositoryImp extends GenericRepositoryImp<Conductor> {
 
-	public ConductorHibernateRepositoryImp(SessionFactory sessionFactory) {
+	public ConductorRepositoryImp(SessionFactory sessionFactory) {
 		super(sessionFactory, Conductor.class);
 	}
 

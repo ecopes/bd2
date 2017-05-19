@@ -7,10 +7,10 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import bd2.Muber.DTO.ConductorDTO;
-import bd2.Muber.RepositoryHibernateImp.RepositoryLocator;
 import bd2.Muber.model.Calificacion;
 import bd2.Muber.model.Conductor;
 import bd2.Muber.model.Viaje;
+import bd2.Muber.repository.RepositoryLocator;
 import bd2.Muber.serviceINT.ConductorServiceINT;
 
 @Transactional

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd2.Muber.DTO.PasajeroDTO;
-import bd2.Muber.RepositoryHibernateImp.RepositoryLocator;
 import bd2.Muber.model.Pasajero;
+import bd2.Muber.repository.RepositoryLocator;
 import bd2.Muber.serviceINT.PasajeroServiceINT;
 
 public class PasajeroServiceIMP implements PasajeroServiceINT{

@@ -1,4 +1,4 @@
-package bd2.Muber.RepositoryHibernateImp;
+package bd2.Muber.repository;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import org.hibernate.SessionFactory;
 
 import bd2.Muber.model.Viaje;
 
-public class ViajeHibernateRepositoryImp extends GenericRepositoryHibernateImp<Viaje> {
+public class ViajeRepositoryImp extends GenericRepositoryImp<Viaje> {
 
-	public ViajeHibernateRepositoryImp(SessionFactory sessionFactory) {
+	public ViajeRepositoryImp(SessionFactory sessionFactory) {
 		super(sessionFactory,Viaje.class);
 	}
 	

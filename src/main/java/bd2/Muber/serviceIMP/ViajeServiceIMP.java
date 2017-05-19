@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd2.Muber.DTO.ViajeDTO;
-import bd2.Muber.RepositoryHibernateImp.RepositoryLocator;
 import bd2.Muber.model.Calificacion;
 import bd2.Muber.model.Conductor;
 import bd2.Muber.model.Pasajero;
 import bd2.Muber.model.Viaje;
+import bd2.Muber.repository.RepositoryLocator;
 import bd2.Muber.serviceINT.ViajeServiceINT;
 
 public class ViajeServiceIMP implements ViajeServiceINT {
