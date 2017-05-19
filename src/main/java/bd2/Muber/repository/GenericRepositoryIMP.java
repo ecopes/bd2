@@ -8,13 +8,13 @@ import javax.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-public class GenericRepositoryImp<T> {
+public class GenericRepositoryIMP<T> {
 
 	protected Class<T> persistentClass;
 
 	private SessionFactory sessionFactory;
 
-	public GenericRepositoryImp(SessionFactory sessionFactory,Class<T> clase) {
+	public GenericRepositoryIMP(SessionFactory sessionFactory,Class<T> clase) {
 		this.setPersistentClass(clase);
 		this.sessionFactory = sessionFactory;
 	}

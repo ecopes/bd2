@@ -73,7 +73,7 @@
 	<!-- Fin RepositoryLocator -->
 
 	<!-- Comienzo Repository -->
-	<bean id="CalificacionRepositoryTarget" class="bd2.Muber.repository.CalificacionRepositoryImp">
+	<bean id="CalificacionRepositoryTarget" class="bd2.Muber.repository.CalificacionRepositoryIMP">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
@@ -94,7 +94,7 @@
 		</property>
 
 	</bean>
-	<bean id="ConductorRepositoryTarget" class="bd2.Muber.repository.ConductorRepositoryImp">
+	<bean id="ConductorRepositoryTarget" class="bd2.Muber.repository.ConductorRepositoryIMP">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
@@ -114,7 +114,7 @@
 		</property>
 
 	</bean>
-	<bean id="MuberRepositoryTarget" class="bd2.Muber.repository.MuberRepositoryImp">
+	<bean id="MuberRepositoryTarget" class="bd2.Muber.repository.MuberRepositoryIMP">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
@@ -134,7 +134,7 @@
 		</property>
 
 	</bean>
-	<bean id="PasajeroRepositoryTarget" class="bd2.Muber.repository.PasajeroRepositoryImp">
+	<bean id="PasajeroRepositoryTarget" class="bd2.Muber.repository.PasajeroRepositoryIMP">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
@@ -154,7 +154,7 @@
 		</property>
 
 	</bean>
-	<bean id="ViajeRepositoryTarget" class="bd2.Muber.repository.ViajeRepositoryImp">
+	<bean id="ViajeRepositoryTarget" class="bd2.Muber.repository.ViajeRepositoryIMP">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>

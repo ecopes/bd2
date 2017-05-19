@@ -6,9 +6,9 @@ import org.hibernate.SessionFactory;
 
 import bd2.Muber.model.Conductor;
 
-public class ConductorRepositoryImp extends GenericRepositoryImp<Conductor> {
+public class ConductorRepositoryIMP extends GenericRepositoryIMP<Conductor> {
 
-	public ConductorRepositoryImp(SessionFactory sessionFactory) {
+	public ConductorRepositoryIMP(SessionFactory sessionFactory) {
 		super(sessionFactory, Conductor.class);
 	}
 

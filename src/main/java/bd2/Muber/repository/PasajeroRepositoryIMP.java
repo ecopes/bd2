@@ -4,9 +4,9 @@ import org.hibernate.SessionFactory;
 
 import bd2.Muber.model.Pasajero;
 
-public class PasajeroRepositoryImp extends GenericRepositoryImp<Pasajero> {
+public class PasajeroRepositoryIMP extends GenericRepositoryIMP<Pasajero> {
 
-	public PasajeroRepositoryImp(SessionFactory sessionFactory) {
+	public PasajeroRepositoryIMP(SessionFactory sessionFactory) {
 		super(sessionFactory,Pasajero.class);
 	}
 

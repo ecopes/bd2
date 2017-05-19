@@ -7,9 +7,9 @@ import org.hibernate.SessionFactory;
 
 import bd2.Muber.model.Viaje;
 
-public class ViajeRepositoryImp extends GenericRepositoryImp<Viaje> {
+public class ViajeRepositoryIMP extends GenericRepositoryIMP<Viaje> {
 
-	public ViajeRepositoryImp(SessionFactory sessionFactory) {
+	public ViajeRepositoryIMP(SessionFactory sessionFactory) {
 		super(sessionFactory,Viaje.class);
 	}
 	

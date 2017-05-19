@@ -4,9 +4,9 @@ import org.hibernate.SessionFactory;
 
 import bd2.Muber.model.Calificacion;
 
-public class CalificacionRepositoryImp extends GenericRepositoryImp<Calificacion> {
+public class CalificacionRepositoryIMP extends GenericRepositoryIMP<Calificacion> {
 
-	public CalificacionRepositoryImp(SessionFactory sessionFactory) {
+	public CalificacionRepositoryIMP(SessionFactory sessionFactory) {
 		super(sessionFactory,Calificacion.class);
 	}
 

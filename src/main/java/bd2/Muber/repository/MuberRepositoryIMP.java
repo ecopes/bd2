@@ -4,9 +4,9 @@ import org.hibernate.SessionFactory;
 
 import bd2.Muber.model.Muber;
 
-public class MuberRepositoryImp extends GenericRepositoryImp<Muber> {
+public class MuberRepositoryIMP extends GenericRepositoryIMP<Muber> {
 
-	public MuberRepositoryImp(SessionFactory sessionFactory) {
+	public MuberRepositoryIMP(SessionFactory sessionFactory) {
 		super(sessionFactory, Muber.class);
 	}
 	

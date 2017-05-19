@@ -4,11 +4,11 @@ public class RepositoryLocator {
 	
 	protected static RepositoryLocator instance = null;
 	
-	protected CalificacionRepositoryImp calificacionRepository;
-	protected ConductorRepositoryImp conductorRepository;
-	protected MuberRepositoryImp muberRepository;
-	protected PasajeroRepositoryImp pasajeroRepository;
-	protected ViajeRepositoryImp viajeRepository;
+	protected CalificacionRepositoryIMP calificacionRepository;
+	protected ConductorRepositoryIMP conductorRepository;
+	protected MuberRepositoryIMP muberRepository;
+	protected PasajeroRepositoryIMP pasajeroRepository;
+	protected ViajeRepositoryIMP viajeRepository;
 	
 	public static RepositoryLocator getInstance()
 	{
@@ -21,43 +21,43 @@ public class RepositoryLocator {
 	public RepositoryLocator() {
 	}
 
-	public CalificacionRepositoryImp getCalificacionRepository() {
+	public CalificacionRepositoryIMP getCalificacionRepository() {
 		return calificacionRepository;
 	}
 
-	public void setCalificacionRepository(CalificacionRepositoryImp calificacionRepository) {
+	public void setCalificacionRepository(CalificacionRepositoryIMP calificacionRepository) {
 		this.calificacionRepository = calificacionRepository;
 	}
 
-	public ConductorRepositoryImp getConductorRepository() {
+	public ConductorRepositoryIMP getConductorRepository() {
 		return conductorRepository;
 	}
 
-	public void setConductorRepository(ConductorRepositoryImp conductorRepository) {
+	public void setConductorRepository(ConductorRepositoryIMP conductorRepository) {
 		this.conductorRepository = conductorRepository;
 	}
 
-	public MuberRepositoryImp getMuberRepository() {
+	public MuberRepositoryIMP getMuberRepository() {
 		return muberRepository;
 	}
 
-	public void setMuberRepository(MuberRepositoryImp muberRepository) {
+	public void setMuberRepository(MuberRepositoryIMP muberRepository) {
 		this.muberRepository = muberRepository;
 	}
 
-	public PasajeroRepositoryImp getPasajeroRepository() {
+	public PasajeroRepositoryIMP getPasajeroRepository() {
 		return pasajeroRepository;
 	}
 
-	public void setPasajeroRepository(PasajeroRepositoryImp pasajeroRepository) {
+	public void setPasajeroRepository(PasajeroRepositoryIMP pasajeroRepository) {
 		this.pasajeroRepository = pasajeroRepository;
 	}
 
-	public ViajeRepositoryImp getViajeRepository() {
+	public ViajeRepositoryIMP getViajeRepository() {
 		return viajeRepository;
 	}
 
-	public void setViajeRepository(ViajeRepositoryImp viajeRepository) {
+	public void setViajeRepository(ViajeRepositoryIMP viajeRepository) {
 		this.viajeRepository = viajeRepository;
 	}
 
