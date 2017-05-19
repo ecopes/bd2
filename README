@@ -8,4 +8,3 @@ esto indica que se cargara el archivo config_dev.properties
 
 
 PREGUNTAS:
-Como agregaria un comentario a un viaje sin llamar al dao? (Persistencia por alcanze)
