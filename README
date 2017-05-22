@@ -7,4 +7,7 @@ agregar al servidor
 esto indica que se cargara el archivo config_dev.properties
 
 
+Para ejecutar los curl, "sh nombredelscript.sh" y tira los parametros que esta esperando,
+se encuentran en la carpeta "scripts etapa2"
+
 PREGUNTAS:
