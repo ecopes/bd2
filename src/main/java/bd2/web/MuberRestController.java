@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,47 +21,6 @@ import bd2.Muber.serviceIMP.ServiceLocator;
 @ResponseBody
 @EnableWebMvc
 public class MuberRestController {
-	@RequestMapping(value = "/listarWS", method = RequestMethod.GET)
-	public String example() {
-		String pagina = "<!DOCTYPE html><html><head><title>Listado de los ws</title></head><body>"
-				+"<br><h3>Listar todos los pasajeros registrados en Muber:</h3>"
-				+"<a href='http://127.0.0.1:8080/MuberRESTful/rest/services/pasajeros'>Listar</a><br>"
-
-				+"<br><h3>Listar todos los conductores registrados en Muber:</h3>"
-				+"<a href='http://127.0.0.1:8080/MuberRESTful/rest/services/conductores'>Listar</a><br>"
-
-				+"<br><h3>Listar todos los viajes abiertos en Muber:</h3>"
-				+"<a href='http://127.0.0.1:8080/MuberRESTful/rest/services/viajes/abiertos'>Listar</a><br>"
-
-				+"<br><h3>Obtener la información de un conductor:</h3>"
-				+ "<form action='http://127.0.0.1:8080/MuberRESTful/rest/services/conductores/detalle/' method='get'>"
-				+ "<input type='text' name='conductorId' placeholder='ID del conductor' required><br>"
-				+ "<input type='submit' value='Enviar'></form> "
-
-				+ "<br><h3>Crear Viaje:</h3>"
-				+ "<form action='http://127.0.0.1:8080/MuberRESTful/rest/services/viajes/nuevo/' method='post'>"
-				+ "<input type='text' name='origen' placeholder='Origen' required><br>"
-				+ "<input type='text' name='destino' placeholder='Destino' required><br>"
-				+ "<input type='number' name='conductorId' placeholder='ID del conductor' required><br>"
-				+ "<input type='number' step='0.01' name='costoTotal' placeholder='Costo total' required><br>"
-				+ "<input type='number' name='cantidadPasajeros' placeholder='Cantidad de pasajeros' required><br>"
-				+ "<input type='submit' value='Enviar'></form> "
-
-				+ "<br><h3>Crear una calificación de un pasajero para un viaje en particular:</h3>"
-				+ "<form action='http://127.0.0.1:8080/MuberRESTful/rest/services/viajes/calificar/' method='post'>"
-				+ "<input type='number' name='viajeId' placeholder='ID del Viaje' required><br>"
-				+ "<input type='number' name='pasajeroId' placeholder='ID del Pasajero' required><br>"
-				+ "<input type='number' step='0.01' name='puntaje' placeholder='Puntaje' required><br>"
-				+ "<input type='text' name='comentario' placeholder='Comentario' required><br>"
-				+ "<input type='submit' value='Enviar'></form> "
-
-				+"<br><h3>Listar los 10 conductores mejor calificados que no tengan viajes abiertos registrados:</h3>"
-				+"<a href='http://127.0.0.1:8080/MuberRESTful/rest/services/conductores/top10'>Listar</a><br>"
-
-				+"</body><html>";
-
-		return pagina;
-	}
 
 	@RequestMapping(value = "/pasajeros", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
 	public String pasajeros() {
@@ -87,26 +47,26 @@ public class MuberRestController {
 	}
 
 	@RequestMapping(value = "/viajes/nuevo/", method = RequestMethod.POST, produces = "application/json", headers = "Accept=application/json")
-	public String viajesNuevo(
-			@RequestParam(value="conductorId") int conductorID
-			,@RequestParam(value="origen") String origen
-			,@RequestParam(value="destino") String destino
-			,@RequestParam(value="costoTotal") float costoTotal
-			,@RequestParam(value="cantidadPasajeros") int cantPasajeros){
-
+	public String viajesNuevo(@RequestBody Map<String,String> viaje){
+		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(ServiceLocator.getInstance().getViajeService().agregarViaje(destino, origen, cantPasajeros, costoTotal, conductorID));
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().agregarViaje(
+				viaje.get("destino"), 
+				viaje.get("origen"), 
+				Integer.parseInt(viaje.get("cantidadPasajeros")), 
+				Double.parseDouble(viaje.get("costoTotal")), 
+				Integer.parseInt(viaje.get("conductorId"))));
 	}
 
 	@RequestMapping(value = "/viajes/calificar/", method = RequestMethod.POST, produces = "application/json", headers = "Accept=application/json")
-	public String viajesCalificar(
-			@RequestParam(value="viajeId") int viajeID
-			,@RequestParam(value="pasajeroId") int pasajeroID
-			,@RequestParam(value="puntaje") double puntaje
-			,@RequestParam(value="comentario") String comentario){
+	public String viajesCalificar(@RequestBody Map<String,String> calificacion){
 
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(ServiceLocator.getInstance().getViajeService().comentarViaje(viajeID, pasajeroID, puntaje, comentario));
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().comentarViaje(
+				Integer.parseInt(calificacion.get("viajeId")), 
+				Integer.parseInt(calificacion.get("pasajeroId")), 
+				Double.parseDouble(calificacion.get("puntaje")), 
+				calificacion.get("comentario")));
 	}
 
 	@RequestMapping(value = "/conductores/top10", method = RequestMethod.GET, produces = "application/json", headers = "Accept=application/json")
@@ -116,15 +76,18 @@ public class MuberRestController {
 	}
 
 	@RequestMapping(value = "/viajes/agregarPasajero", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
-	public String agregarPasajero(@RequestParam int pasajeroId, @RequestParam int viajeId) {
+	public String agregarPasajero(@RequestBody Map<String,String> pasajeroViaje) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(ServiceLocator.getInstance().getViajeService().agregarPasajero(pasajeroId, viajeId));
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().agregarPasajero(
+				Integer.parseInt(pasajeroViaje.get("pasajeroId")), 
+				Integer.parseInt(pasajeroViaje.get("viajeId"))));
 	}
 
 	@RequestMapping(value = "/pasajeros/cargarCredito", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
-	public String agregarCreditoAPasajero(@RequestParam int pasajeroId, @RequestParam double monto) {
-		
-		ServiceLocator.getInstance().getPasajeroService().cargarCredito(pasajeroId, monto);
+	public String agregarCreditoAPasajero(@RequestBody Map<String,String> credito) {		
+		ServiceLocator.getInstance().getPasajeroService().cargarCredito(
+				Integer.parseInt(credito.get("pasajeroId")), 
+				Double.parseDouble(credito.get("monto")));
 		Map<String, Object> aMap = new HashMap<String, Object>();
 		aMap.put("Respuesta","Se agrego el credito");
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -132,9 +95,9 @@ public class MuberRestController {
 	}
 
 	@RequestMapping(value = "/viajes/finalizar", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
-	public String finalizarViaje(@RequestParam int viajeId) {
+	public String finalizarViaje(@RequestBody Map<String,String> viaje) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(ServiceLocator.getInstance().getViajeService().finalizarViaje(viajeId));
+		return gson.toJson(ServiceLocator.getInstance().getViajeService().finalizarViaje(Integer.parseInt(viaje.get("viajeId"))));
 	}
 	
 }

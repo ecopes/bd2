@@ -1,7 +1,7 @@
 package bd2.Muber.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 
 public class Viaje{
@@ -29,8 +29,8 @@ public class Viaje{
 		this.cantidadMaximaPasajeros = cantidadMaximaPasajeros;
 		this.costoTotal = costoTotal;
 		this.conductor = conductor;
-		this.pasajeros = Collections.emptyList();
-		this.calificaciones = Collections.emptyList();
+		this.pasajeros = new ArrayList<Pasajero>();
+		this.calificaciones = new ArrayList<Calificacion>();
 	}
 
 

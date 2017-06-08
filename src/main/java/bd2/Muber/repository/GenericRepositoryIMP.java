@@ -5,8 +5,11 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
+import bd2.Muber.model.Viaje;
 
 public class GenericRepositoryIMP<T> {
 
@@ -39,10 +42,10 @@ public class GenericRepositoryIMP<T> {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<T> recuperarTodos() {
-		@SuppressWarnings("unchecked")
-		List<T> resultado = getCurrentSession().createCriteria(getPersistentClass()).list();
-		return resultado;
+		Query query = getCurrentSession().createQuery("from "+getPersistentClass().getName());
+		return (List<T>) query.list();
 	}
 
 	public boolean existe(Serializable id) {

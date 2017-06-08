@@ -17,8 +17,7 @@
 			<property name="fechaLicencia" />
 			<bag name="viajes" table="VIAJE_CONDUCTOR" cascade="all" lazy="false">
 				<key column="ID_CONDUCTOR" not-null="true" />
-				<many-to-many entity-name="bd2.Muber.model.Viaje"
-					column="ID_VIAJE" />
+				<one-to-many entity-name="bd2.Muber.model.Viaje"/>
 			</bag>
 		</subclass>
 

@@ -47,7 +47,7 @@ tx.commit();
 // ETAPA 2
 
 // agrego el segundo viaje de roberto
-Viaje viajeRoberto2 = new Viaje("Mar del Plata","Cordoba",4,350,roberto);
+Viaje viajeRoberto2 = new Viaje("Mar del Plata","Cordoba",4,3500,roberto);
 roberto.addViaje(viajeRoberto2);
 
 // agrego credito a margarita
@@ -60,7 +60,7 @@ viajeRoberto2.addPasajero(margarita);
 Pasajero hugo = new Pasajero("Hugo","unaPassword",new Date(),2300);
 
 // agrego a hugo al viaje
-System.out.println( "-------------------" + viajeRoberto2.addPasajero(hugo) + "---------------" );
+viajeRoberto2.addPasajero(hugo);
 
 //finalizo el viaje
 viajeRoberto2.finalizar();
@@ -78,3 +78,5 @@ viajeRoberto2.addCalificacion(calificacionHugo);
 Transaction tx2 = session.beginTransaction();
 muber.addViaje(viajeRoberto2);
 tx2.commit();
+
+// ETAPA 3

@@ -1,7 +1,7 @@
 package bd2.Muber.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 public class Muber {
 	
@@ -10,8 +10,8 @@ public class Muber {
 	private Collection<Viaje> viajes;
 	
 	public Muber(){
-		this.usuarios = Collections.emptyList();
-		this.viajes = Collections.emptyList();
+		this.usuarios = new ArrayList<Usuario>();
+		this.viajes = new ArrayList<Viaje>();
 	}
 	
 	
