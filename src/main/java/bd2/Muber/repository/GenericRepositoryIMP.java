@@ -9,8 +9,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import bd2.Muber.model.Viaje;
-
 public class GenericRepositoryIMP<T> {
 
 	protected Class<T> persistentClass;
